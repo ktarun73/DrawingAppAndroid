@@ -30,7 +30,7 @@ class DrawingView(context: Context,attrs: AttributeSet) : View(context,attrs) {
         mDrawPaint!!.strokeJoin=Paint.Join.ROUND
         mDrawPaint!!.strokeCap=Paint.Cap.ROUND
         mCanvasPaint = Paint(Paint.DITHER_FLAG)
-//        mBrushSize = 20.toFloat()
+//        mBrushSize = 10.toFloat()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -100,8 +100,12 @@ class DrawingView(context: Context,attrs: AttributeSet) : View(context,attrs) {
     }
 
 
-    fun setColor(newColor: String){
-        color = Color.parseColor((newColor))
+
+    fun setColorWithColorPicker(newColor: Int){
+        color = newColor
+    }
+    fun getColor():Int{
+        return color
     }
 
     internal inner class CustomPath(var color:Int,var brushThickness: Float) :Path(){

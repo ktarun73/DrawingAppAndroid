@@ -3,12 +3,12 @@ package com.example.drawing
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import com.nvt.color.ColorPickerDialog
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,13 +19,19 @@ class MainActivity : AppCompatActivity() {
 
     private var mBtnGallery: ImageButton? = null
 
+    private var ibSelectedColor: ImageButton?=null
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
         drawingView=findViewById(R.id.drawing_view)
-        drawingView?.setSizeForBrush(20.toFloat())
+        drawingView?.setSizeForBrush(10.toFloat())
 
         val linearLayoutPaintColors = findViewById<LinearLayout>(R.id.ll_color_selector)
 
@@ -45,27 +51,21 @@ class MainActivity : AppCompatActivity() {
             showBrushSizeChooserDialog()
         }
 
-
-
-    }
-
-
-
-    fun paintClicked(view: View){
-        if(view !== mImageButtonCurrentPaint){
-            mImageButtonCurrentPaint!!.setImageDrawable(
-                ContextCompat.getDrawable(this,R.drawable.pallet_normal)
-            )
-            mImageButtonCurrentPaint=view as ImageButton
-            val imageButton=view as ImageButton
-            val colorTag = imageButton.tag.toString()
-            drawingView?.setColor(colorTag)
+        val ibColorPicker = findViewById<ImageButton>(R.id.ib_color_picker)
+        ibColorPicker.setOnClickListener {
+            onColorPicker()
         }
 
-        mImageButtonCurrentPaint!!.setImageDrawable(
-            ContextCompat.getDrawable(this,R.drawable.pallet_pressed)
-        )
+        val curColor=drawingView?.getColor()
+        ibSelectedColor=findViewById(R.id.ib_selected_color)
+        ibSelectedColor?.setBackgroundColor(curColor as Int)
+
+
     }
+
+
+
+
 
 
     private fun showBrushSizeChooserDialog(){
@@ -89,6 +89,27 @@ class MainActivity : AppCompatActivity() {
             brushDialog.dismiss()
         }
         brushDialog.show()
+    }
+
+    private fun onColorPicker(){
+        val colorPicker = ColorPickerDialog(
+            this,
+            drawingView!!.getColor(), // color init
+            true, // true is show alpha
+            object : ColorPickerDialog.OnColorPickerListener {
+                override fun onCancel(dialog: ColorPickerDialog?) {
+                    // handle click button Cancel
+
+                }
+
+                override fun onOk(dialog: ColorPickerDialog?, colorPicker: Int) {
+                    // handle click button OK
+                    drawingView?.setColorWithColorPicker(colorPicker)
+                    Toast.makeText(applicationContext,"$colorPicker",Toast.LENGTH_SHORT).show()
+                    ibSelectedColor?.setBackgroundColor(colorPicker)
+                }
+            })
+        colorPicker.show()
     }
 
 
